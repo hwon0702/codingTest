@@ -11,32 +11,34 @@ func main() {
 	writer := bufio.NewWriter(os.Stdout)
 	defer writer.Flush()
 
-	var n, s, min, sum int
-	min = 100000002
-	fmt.Fscanf(reader, "%d %d\n", &n, &s)
-	var numbers = make([]int, n)
+	var n int
+	var s int64
+	fmt.Fscan(reader, &n, &s)
+
+	arr := make([]int64, n)
 	for i := 0; i < n; i++ {
-		fmt.Fscanf(reader, "%d ", &numbers[i])
+		fmt.Fscan(reader, &arr[i])
 	}
-	for i := 0; i < n; i++ {
-		sum = numbers[i]
-		if sum >= s {
-			min = 1
-			break
-		}
-		for j := i + 1; j < n; j++ {
-			sum += numbers[j]
-			if sum >= s {
-				if j-i < min {
-					min = j - i + 1
-				}
-				break
+
+	var sum int64 = 0
+	left := 0
+	res := n + 1
+
+	for right := 0; right < n; right++ {
+		sum += arr[right]
+
+		for sum >= s {
+			if right-left+1 < res {
+				res = right - left + 1
 			}
+			sum -= arr[left]
+			left++
 		}
 	}
-	if min >= 100000002 {
-		fmt.Fprintf(writer, "%d\n", 0)
+
+	if res == n+1 {
+		fmt.Fprintln(writer, 0)
 	} else {
-		fmt.Fprintf(writer, "%d\n", min)
+		fmt.Fprintln(writer, res)
 	}
 }
